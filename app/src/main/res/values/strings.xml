@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Clean MVVM</string>
+    <string name="rename">Изменить \n профиль</string>
+    <string name="user_has_been_renamed">Student has been renamed</string>
+    <string name="default_title">App</string>
+    <string name="current_student">Текущий ученик: %1$s</string>
+    <string name="error_please_try_again">Error! Please try again.</string>
+    <string name="try_again">Try again</string>
+    <string name="message">MESSAGE</string>
+    <string name="percentage_is">%1$d%%</string>
+</resources>
