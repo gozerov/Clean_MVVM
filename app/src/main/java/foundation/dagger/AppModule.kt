@@ -2,7 +2,7 @@ package foundation.dagger
 
 import dagger.Module
 import dagger.Provides
-import foundation.model.coroutines.IoDispatcher
+import com.example.clean_mvvm.data.cache.entity.IoDispatcher
 import kotlinx.coroutines.Dispatchers
 
 

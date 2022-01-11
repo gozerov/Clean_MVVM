@@ -1,7 +1,7 @@
 package com.example.clean_mvvm.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.clean_mvvm.domain.entity.Student
+import com.example.clean_mvvm.domain.entity.student.Student
 
 class StudentDiffCallback(
     private val oldList: List<Student>,

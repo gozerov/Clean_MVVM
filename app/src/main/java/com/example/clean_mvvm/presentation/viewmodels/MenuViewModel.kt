@@ -1,33 +1,29 @@
 package com.example.clean_mvvm.presentation.viewmodels
 
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.ViewModelProvider
 import com.example.clean_mvvm.domain.entity.PendingResult
 import com.example.clean_mvvm.domain.entity.Result
-import com.example.clean_mvvm.domain.entity.Student
 import com.example.clean_mvvm.domain.entity.SuccessResult
+import com.example.clean_mvvm.domain.entity.student.Student
+import com.example.clean_mvvm.domain.entity.student.StudentId
 import com.example.clean_mvvm.domain.usecase.GetCurrentStudentUseCase
 import com.example.clean_mvvm.domain.usecase.ListenStudentsUseCase
 import foundation.views.BaseViewModel
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class MenuViewModel(
-    private val getCurrentStudentUseCase: GetCurrentStudentUseCase,
     private val listenStudentsUseCase: ListenStudentsUseCase,
-    savedStateHandle: SavedStateHandle,
+    private val getCurrentStudentUseCase: GetCurrentStudentUseCase
 ): BaseViewModel() {
 
     private val _eventFlow = MutableSharedFlow<MenuEvents>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var _students = savedStateHandle.getStateFlow<Result<List<Student>>>(KEY_STUDENTS, PendingResult())
+    private var _students = MutableStateFlow<Result<List<Student>>>(PendingResult())
     val students: StateFlow<Result<List<Student>>> = _students.asStateFlow()
 
     init {
@@ -42,9 +38,8 @@ class MenuViewModel(
         listenRepository()
     }
 
-    suspend fun getStudentById(id: Long): Student {
-        return getCurrentStudentUseCase.execute(id)
-    }
+    suspend fun getStudentById(id: Long): Student = getCurrentStudentUseCase.execute(StudentId(id))
+
 
     private fun listenRepository() {
         viewModelScope.launch {
@@ -54,36 +49,20 @@ class MenuViewModel(
         }
     }
 
-    companion object {
-        const val KEY_STUDENTS = "students"
-    }
-
     sealed class MenuEvents {
 
         data class NavigateToStudentScreen(val student: Student) : MenuEvents()
 
     }
 
-    class StudentFactory @AssistedInject constructor(
+    class StudentFactory @Inject constructor(
         private val listenStudentsUseCase: ListenStudentsUseCase,
-        private val getCurrentStudentUseCase: GetCurrentStudentUseCase,
-        @Assisted("owner") owner: SavedStateRegistryOwner
-    ) : AbstractSavedStateViewModelFactory(owner, null) {
+        private val getCurrentStudentUseCase: GetCurrentStudentUseCase
+    ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(
-            key: String,
-            modelClass: Class<T>,
-            handle: SavedStateHandle
-        ): T {
-            return MenuViewModel(getCurrentStudentUseCase, listenStudentsUseCase, handle) as T
-        }
-
-        @AssistedFactory
-        interface Factory {
-
-            fun create(@Assisted("owner") owner: SavedStateRegistryOwner): StudentFactory
-
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return MenuViewModel(listenStudentsUseCase, getCurrentStudentUseCase) as T
         }
     }
 

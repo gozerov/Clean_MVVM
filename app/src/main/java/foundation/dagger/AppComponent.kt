@@ -5,6 +5,7 @@ import com.example.clean_mvvm.application.App
 import com.example.clean_mvvm.presentation.screens.MenuFragment
 import com.example.clean_mvvm.presentation.screens.StudentFragment
 import com.example.clean_mvvm.presentation.viewmodels.MenuViewModel
+import com.example.clean_mvvm.presentation.viewmodels.StudentViewModel
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -13,6 +14,7 @@ import javax.inject.Singleton
 @Component(modules = [AppModule::class])
 interface AppComponent {
 
+    fun inject(viewModel: StudentViewModel)
     fun inject(viewModel: MenuViewModel)
     fun inject(app: App)
     fun inject(fragment: StudentFragment)

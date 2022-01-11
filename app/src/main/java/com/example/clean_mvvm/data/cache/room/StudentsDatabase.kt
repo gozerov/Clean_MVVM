@@ -1,12 +1,12 @@
-package foundation.model.sqlite
+package com.example.clean_mvvm.data.cache.room
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.clean_mvvm.domain.entity.Student
+import com.example.clean_mvvm.data.cache.entity.DBStudent
 
-@Database(entities = [Student::class], version = 1)
+@Database(entities = [DBStudent::class], version = 1)
 abstract class StudentsDatabase : RoomDatabase() {
 
     abstract fun getStudentDao() : StudentDao

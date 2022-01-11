@@ -6,13 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.clean_mvvm.R
 import com.example.clean_mvvm.databinding.FragmentUserItemBinding
-import com.example.clean_mvvm.domain.entity.Student
+import com.example.clean_mvvm.domain.entity.student.Student
 import com.example.clean_mvvm.presentation.viewmodels.StudentViewModel
 import foundation.views.*
 import kotlinx.coroutines.flow.collect
@@ -25,11 +24,11 @@ class StudentFragment: BaseFragment(R.layout.fragment_user_item), HasCustomBar {
     private val args: StudentFragmentArgs by navArgs()
 
     override val viewModel: StudentViewModel by viewModels {
-        factory.create(this, bundleOf(ARG_STUDENT to args.student))
+        factory.create(args.student.id)
     }
 
     @Inject
-    lateinit var factory: CustomViewModelFactory.Factory
+    lateinit var factory: StudentViewModel.StudentFactory.Factory
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
@@ -113,10 +112,9 @@ class StudentFragment: BaseFragment(R.layout.fragment_user_item), HasCustomBar {
         return arguments?.getParcelable(ARG_STUDENT) ?: throw IllegalStateException()
     }
 
-    override fun getCustomTitle(): String = getStudent().fullName
+    override fun getCustomTitle(): String = viewModel.currentStudent?.fullName ?: ""
 
     companion object {
         const val ARG_STUDENT = "student"
     }
-
 }

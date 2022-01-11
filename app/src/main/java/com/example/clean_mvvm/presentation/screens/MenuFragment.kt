@@ -26,12 +26,10 @@ class MenuFragment: BaseFragment(R.layout.fragment_recyclerview) {
     private lateinit var adapter: BaseAdapter
     private lateinit var binding: FragmentRecyclerviewBinding
 
-    override val viewModel: MenuViewModel by viewModels {
-        factory.create(this)
-    }
+    override val viewModel: MenuViewModel by viewModels { factory }
 
     @Inject
-    lateinit var factory: MenuViewModel.StudentFactory.Factory
+    lateinit var factory: MenuViewModel.StudentFactory
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
@@ -95,7 +93,6 @@ class MenuFragment: BaseFragment(R.layout.fragment_recyclerview) {
         binding.recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
         binding.recyclerView.adapter = adapter
     }
-
 
     companion object {
         const val STUDENT_ID = "STUDENT_ID"

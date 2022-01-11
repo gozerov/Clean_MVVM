@@ -1,41 +1,35 @@
 package com.example.clean_mvvm.presentation.viewmodels
 
 import androidx.annotation.MainThread
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.clean_mvvm.R
-import com.example.clean_mvvm.domain.entity.Student
-import com.example.clean_mvvm.domain.repository.StudentRepository
+import com.example.clean_mvvm.domain.entity.*
+import com.example.clean_mvvm.domain.entity.student.Student
+import com.example.clean_mvvm.domain.entity.student.StudentId
 import foundation.views.BaseViewModel
 import com.example.clean_mvvm.presentation.screens.StudentFragment.*
 import foundation.model.*
-import kotlinx.coroutines.launch
-import com.example.clean_mvvm.domain.entity.Result
-import com.example.clean_mvvm.domain.entity.SuccessResult
-import com.example.clean_mvvm.domain.entity.takeSuccess
-import foundation.utils.finiteShareIn
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.async
+import com.example.clean_mvvm.domain.usecase.GetCurrentStudentUseCase
+import com.example.clean_mvvm.domain.usecase.RenameStudentUseCase
 import kotlinx.coroutines.flow.*
-import com.example.clean_mvvm.presentation.screens.StudentFragment.Companion.ARG_STUDENT
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import foundation.utils.finiteShareIn
+import kotlinx.coroutines.*
 
 class StudentViewModel (
-    private val studentService: StudentRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val studentId: Long,
+    private val getCurrentStudentUseCase: GetCurrentStudentUseCase,
+    private val renameStudentUseCase: RenameStudentUseCase
 ): BaseViewModel() {
 
-    private var _currentStudent = MutableStateFlow(
-        SuccessResult(
-        savedStateHandle.get<Student>(ARG_STUDENT)!!)
-    )
-        set(value) {
-            field = value
-            savedStateHandle.set(ARG_STUDENT, value.value.data)
-        }
+    private var _currentStudent = MutableStateFlow<Result<Student>>(PendingResult())
+    var currentStudent: Student? = null
 
     private val _instanceRenameInProgress = MutableStateFlow<Progress>(EmptyProgress)
     private val _sampledRenameInProgress = MutableStateFlow<Progress>(EmptyProgress)
-
-    var currentStudent: Student? = null
 
     val viewState: Flow<Result<ViewState>> = combine(
         _currentStudent,
@@ -56,7 +50,7 @@ class StudentViewModel (
             _instanceRenameInProgress.value = PercentageProgress.START
             _sampledRenameInProgress.value = PercentageProgress.START
 
-            val flow = studentService.renameStudent(_currentStudent.value.takeSuccess()!!)
+            val flow = renameStudentUseCase.execute(StudentId(studentId))
                 .finiteShareIn(this)
 
             val instanceJob = async {
@@ -70,16 +64,14 @@ class StudentViewModel (
             instanceJob.await()
             sampledJob.await()
 
-            _currentStudent.value = SuccessResult(studentService.getStudentById(_currentStudent.value.data.id))
             toast(R.string.user_has_been_renamed)
-            _renameEvent.emit(_currentStudent.value.data)
+            _renameEvent.emit(getCurrentStudentUseCaseResult())
         }
         catch (e: Exception) {
             if (e !is CancellationException) {
                 toast(R.string.user_has_been_renamed)
             }
         }
-
         finally {
             _instanceRenameInProgress.value = EmptyProgress
             _sampledRenameInProgress.value = EmptyProgress
@@ -90,8 +82,16 @@ class StudentViewModel (
         load()
     }
 
+    private suspend fun getCurrentStudentUseCaseResult(): Student {
+        val result = getCurrentStudentUseCase.execute(StudentId(studentId))
+        _currentStudent.value = SuccessResult(result)
+        updateToolbar(result.fullName)
+        return result
+    }
+
     private fun load() = viewModelScope.launch {
-        studentService.setCurrentStudent(_currentStudent.value.data).collect()
+        delay(500)
+        getCurrentStudentUseCaseResult()
     }
 
     @MainThread
@@ -120,4 +120,24 @@ class StudentViewModel (
         val renameProgressPercentage: Int,
         val renameProgressPercentageMessage: String
     )
+
+    class StudentFactory @AssistedInject constructor(
+        private val getCurrentStudentUseCase: GetCurrentStudentUseCase,
+        private val renameStudentUseCase: RenameStudentUseCase,
+        @Assisted("studentId") private val studentId: Long
+    ) : ViewModelProvider.Factory {
+
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return StudentViewModel(studentId, getCurrentStudentUseCase, renameStudentUseCase) as T
+        }
+
+        @AssistedFactory
+        interface Factory {
+
+            fun create(@Assisted("studentId") studentId: Long): StudentFactory
+
+        }
+    }
+
 }

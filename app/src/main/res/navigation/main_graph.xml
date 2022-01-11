@@ -15,7 +15,8 @@
         <argument
             android:name="student"
             app:nullable="true"
-            app:argType="com.example.clean_mvvm.domain.entity.Student" />
+            app:argType="com.example.clean_mvvm.domain.entity.student.Student"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/studentFragment"
@@ -24,7 +25,7 @@
         tools:layout="@layout/fragment_user_item" >
         <argument
             android:name="student"
-            app:argType="com.example.clean_mvvm.domain.entity.Student" />
+            app:argType="com.example.clean_mvvm.domain.entity.student.Student" />
         <action
             android:id="@+id/action_studentFragment_to_menuFragment"
             app:destination="@id/menuFragment" />
