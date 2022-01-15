@@ -1,0 +1,21 @@
+plugins {
+    id 'java-library'
+    id 'kotlin'
+    id 'kotlin-kapt' // annotations
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+dependencies {
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
+
+    //dagger 2
+
+    def dagger2_version = "2.36"
+
+    implementation "com.google.dagger:dagger:$dagger2_version"
+    kapt("com.google.dagger:dagger-compiler:$dagger2_version")
+}

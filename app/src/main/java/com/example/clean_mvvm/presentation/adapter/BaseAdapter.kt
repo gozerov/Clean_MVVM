@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clean_mvvm.databinding.ItemRecyclerviewBinding
 import com.example.clean_mvvm.domain.entity.student.Student
-import foundation.utils.Event
+import com.example.clean_mvvm.core.utils.Event
 
 class BaseAdapter : RecyclerView.Adapter<BaseAdapter.BaseViewHolder>(), View.OnClickListener {
 

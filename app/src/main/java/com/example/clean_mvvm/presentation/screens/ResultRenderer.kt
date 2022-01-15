@@ -8,9 +8,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.clean_mvvm.R
+import com.example.clean_mvvm.core.model.result.Result
 import com.example.clean_mvvm.databinding.PartResultBinding
-import com.example.clean_mvvm.domain.entity.Result
-import foundation.views.BaseFragment
+import com.example.clean_mvvm.core.views.BaseFragment
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

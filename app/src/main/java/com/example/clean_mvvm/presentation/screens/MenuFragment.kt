@@ -10,13 +10,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.clean_mvvm.R
+import com.example.clean_mvvm.application.APP_PREFERENCES
+import com.example.clean_mvvm.application.appComponent
 import com.example.clean_mvvm.databinding.FragmentRecyclerviewBinding
 import com.example.clean_mvvm.presentation.adapter.BaseAdapter
-import foundation.views.BaseFragment
+import com.example.clean_mvvm.core.views.BaseFragment
 import com.example.clean_mvvm.presentation.viewmodels.MenuViewModel
 import com.example.clean_mvvm.presentation.viewmodels.MenuViewModel.MenuEvents.*
-import foundation.views.APP_PREFERENCES
-import foundation.views.appComponent
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -4,19 +4,22 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.clean_mvvm.R
+import com.example.clean_mvvm.core.model.result.PendingResult
+import com.example.clean_mvvm.core.model.result.Result
+import com.example.clean_mvvm.core.model.result.SuccessResult
 import com.example.clean_mvvm.domain.entity.*
 import com.example.clean_mvvm.domain.entity.student.Student
 import com.example.clean_mvvm.domain.entity.student.StudentId
-import foundation.views.BaseViewModel
-import com.example.clean_mvvm.presentation.screens.StudentFragment.*
-import foundation.model.*
 import com.example.clean_mvvm.domain.usecase.GetCurrentStudentUseCase
 import com.example.clean_mvvm.domain.usecase.RenameStudentUseCase
+import com.example.clean_mvvm.core.views.BaseViewModel
+import com.example.clean_mvvm.presentation.screens.StudentFragment.*
+import foundation.model.*
 import kotlinx.coroutines.flow.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import foundation.utils.finiteShareIn
+import com.example.clean_mvvm.core.utils.finiteShareIn
 import kotlinx.coroutines.*
 
 class StudentViewModel (

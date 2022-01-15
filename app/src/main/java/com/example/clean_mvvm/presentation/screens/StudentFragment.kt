@@ -10,10 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.clean_mvvm.R
+import com.example.clean_mvvm.application.APP_PREFERENCES
+import com.example.clean_mvvm.application.appComponent
+import com.example.clean_mvvm.core.views.BaseFragment
+import com.example.clean_mvvm.core.views.HasCustomBar
 import com.example.clean_mvvm.databinding.FragmentUserItemBinding
 import com.example.clean_mvvm.domain.entity.student.Student
 import com.example.clean_mvvm.presentation.viewmodels.StudentViewModel
-import foundation.views.*
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
@@ -81,7 +84,7 @@ class StudentFragment: BaseFragment(R.layout.fragment_user_item), HasCustomBar {
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.renameEvent.collect { student ->
-                parentFragmentManager.findFragmentById(R.id.fragmentContainer)?.arguments?.putParcelable(
+                parentFragmentManager.findFragmentById(R.id.fragmentContainer)?.arguments?.putSerializable(
                     ARG_STUDENT, student
                 )
                 viewModel.updateToolbar(student.fullName)
@@ -109,7 +112,7 @@ class StudentFragment: BaseFragment(R.layout.fragment_user_item), HasCustomBar {
     }
 
     private fun getStudent(): Student {
-        return arguments?.getParcelable(ARG_STUDENT) ?: throw IllegalStateException()
+        return arguments?.getSerializable(ARG_STUDENT) as Student
     }
 
     override fun getCustomTitle(): String = viewModel.currentStudent?.fullName ?: ""

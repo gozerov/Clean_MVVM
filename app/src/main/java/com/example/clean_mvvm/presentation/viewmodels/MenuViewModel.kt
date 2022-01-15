@@ -2,14 +2,14 @@ package com.example.clean_mvvm.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.clean_mvvm.domain.entity.PendingResult
-import com.example.clean_mvvm.domain.entity.Result
-import com.example.clean_mvvm.domain.entity.SuccessResult
+import com.example.clean_mvvm.core.model.result.PendingResult
+import com.example.clean_mvvm.core.model.result.Result
+import com.example.clean_mvvm.core.model.result.SuccessResult
 import com.example.clean_mvvm.domain.entity.student.Student
 import com.example.clean_mvvm.domain.entity.student.StudentId
 import com.example.clean_mvvm.domain.usecase.GetCurrentStudentUseCase
 import com.example.clean_mvvm.domain.usecase.ListenStudentsUseCase
-import foundation.views.BaseViewModel
+import com.example.clean_mvvm.core.views.BaseViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

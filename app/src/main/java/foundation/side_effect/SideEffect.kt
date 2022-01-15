@@ -1,3 +1,0 @@
-package foundation.side_effect
-
-interface SideEffect

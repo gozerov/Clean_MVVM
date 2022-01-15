@@ -1,8 +1,10 @@
 package com.example.clean_mvvm.application
 
 import android.app.Application
-import foundation.dagger.AppComponent
-import foundation.dagger.DaggerAppComponent
+import android.content.Context
+import com.example.clean_mvvm.dagger.AppComponent
+import com.example.clean_mvvm.dagger.DaggerAppComponent
+
 
 class App : Application() {
 
@@ -18,3 +20,11 @@ class App : Application() {
     }
 
 }
+val Context.appComponent: AppComponent
+    get() = when(this) {
+        is App -> appComponent
+        else -> this.applicationContext.appComponent
+    }
+
+
+const val APP_PREFERENCES = "APP_SHARED_PREFERENCES"
